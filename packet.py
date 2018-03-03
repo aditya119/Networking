@@ -4,6 +4,7 @@ class Packet:
         self.payload = payload
         self.receiverIP = receiverIP
         self.receiverMAC = receiverMAC
+        self.receiverMAC = ':'.join(("%012X" % self.receiverMAC)[i:i + 2] for i in range(0, 12, 2))
         self.senderIP = senderIP
         self.senderMAC = senderMAC
         self.senderMAC = ':'.join(("%012X" % self.senderMAC)[i:i + 2] for i in range(0, 12, 2))

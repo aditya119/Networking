@@ -1,4 +1,5 @@
 import socket
+import time
 from uuid import getnode as get_mac
 
 
@@ -13,12 +14,18 @@ class Node:
         self.node_socket.listen(5)
 
     def send_packets(self, packets):
+        """
+        the function is used to send packets over the network, the packets are edited before sending
+        :param packets: the receiver address in the packets is set in this function
+        """
         client_socket, client_address = self.node_socket.accept()
         print("Got a connection from", client_address)
         client_socket.send(str(len(packets)).encode('ascii'))
         for packet in packets:
+            packet['receiver_ip'] = client_address
             print(packet)
             client_socket.send(str(packet).encode('ascii'))
+            time.sleep(1)
         client_socket.close()
 
     def act_as_client(self):
@@ -29,8 +36,9 @@ class Node:
         packets = []
         for i in range(number_of_packets):
             string = self.node_socket.recv(1024).decode('ascii')
-            # print(string)
             packets.append(eval(string))
+            del string
+            time.sleep(1)
         return packets
 
     def verify_packets(self, packets, certificate):
