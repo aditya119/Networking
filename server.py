@@ -1,33 +1,14 @@
 from packet import *
+from node import *
 
-# create a socket object
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# get local machine name
-host = socket.gethostname()
-
+host = '192.168.178.38'
 port = 9999
 
-# bind to the port
-server_socket.bind((host, port))
+server_socket = Node(host, port)
 
-# queue up to 5 requests
-server_socket.listen(5)
+server_socket.act_as_server()
 
 while True:
-    packets = []
-    # establish a connection
-    clientsocket, addr = server_socket.accept()
-    print("Got a connection from %s" % str(addr))
-    packets = input_file(addr)
-    number_of_packets = str(len(packets))
-    print('message:', number_of_packets.encode('ascii'))
-    clientsocket.send(number_of_packets.encode('ascii'))
-    for packet in packets:
-        print("Got a connection from %s" % str(addr))
-        print('certificate:', packet['certificate'])
-        clientsocket.send(packet['certificate'].encode('ascii'))
-        print('message:', packet['payload'])
-        clientsocket.send(packet['payload'])
-    clientsocket.close()
+    packets = input_file(host,get_mac(), '192.168.178.35', get_mac())
+    server_socket.send_packets(packets)
     print('\n\n\n\n')
