@@ -24,21 +24,22 @@ class Node:
         for packet in packets:
             packet['receiver_ip'] = client_address
             print(packet)
+            client_socket.send(str(len(str(packet))).encode('ascii'))
             client_socket.send(str(packet).encode('ascii'))
-            time.sleep(1)
         client_socket.close()
 
     def act_as_client(self):
         self.node_socket.connect((self.ip, self.port))
 
     def receive_packets(self):
-        number_of_packets = int(self.node_socket.recv(1024).decode('ascii'))
+        number_of_packets = int(self.node_socket.recv(7).decode('ascii'))
         packets = []
         for i in range(number_of_packets):
-            string = self.node_socket.recv(1024).decode('ascii')
+            packet_size = int(self.node_socket.recv(3).decode('ascii'))
+            print('next packet size', packet_size)
+            string = self.node_socket.recv(packet_size).decode('ascii')
             packets.append(eval(string))
             del string
-            time.sleep(1)
         return packets
 
     def verify_packets(self, packets, certificate):
