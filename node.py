@@ -17,18 +17,29 @@ class Node:
         print("Got a connection from", client_address[0])
         client_socket.send(str(len(packets)).encode('ascii'))
         for packet in packets:
-            packet['sender_mac'] = get_mac()
+            # packet['sender_mac'] = get_mac()
             packet['receiver_ip'] = client_address[0]
             print(packet)
             client_socket.send(str(len(str(packet))).encode('ascii'))
             client_socket.send(str(packet).encode('ascii'))
         client_socket.close()
 
+    def send_number_of_packets(self, number, socket):
+        print(number)
+        socket.send(str(number).encode('ascii'))
+
+    def send_packet(self, packet, socket, address):
+        packet['receiver_ip'] = address[0]
+        print(packet)
+        socket.send(str(len(str(packet))).encode('ascii'))
+        socket.send(str(packet).encode('ascii'))
+
     def act_as_client(self):
         self.node_socket.connect((self.ip, self.port))
 
     def receive_packets(self):
         number_of_packets = int(self.node_socket.recv(7).decode('ascii'))
+        print(number_of_packets)
         packets = []
         for i in range(number_of_packets):
             packet_size = int(self.node_socket.recv(3).decode('ascii'))
@@ -37,6 +48,15 @@ class Node:
             packets.append(eval(string))
             del string
         return packets
+
+    def receive_number_of_packets(self):
+        return int(self.node_socket.recv(7).decode('ascii'))
+
+    def receive_packet(self, packet_number):
+        packet_size = int(self.node_socket.recv(3).decode('ascii'))
+        print('packet number ' + str(packet_number + 1) + ' size', packet_size)
+        string = self.node_socket.recv(packet_size).decode('ascii')
+        return eval(string)
 
     def send_certificate(self, client_list):
         client_socket, client_address = self.node_socket.accept()
