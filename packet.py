@@ -47,7 +47,7 @@ def input_file(sender_ip, sender_mac, receiver_ip, receiver_mac):
     print(str(file_size) + ' bytes')
     file.close()
 
-    packet_size = int(input('enter packet size in bytes (max 750):'))
+    packet_size = int(input('enter packet size in bytes:'))
     print(str(int(file_size / packet_size)) + ' packets with payload size ' + str(packet_size), end=' ')
     if file_size % packet_size != 0:
         print('one packet with payload size', str(file_size % packet_size))

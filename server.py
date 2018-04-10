@@ -1,7 +1,7 @@
 from packet import *
 from node import *
 
-host = '192.168.178.38'
+host = socket.gethostbyname(socket.gethostname())
 port = 9999
 
 server_socket = Node(host, port)
