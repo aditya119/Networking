@@ -1,4 +1,5 @@
 from node import *
+import random
 
 host = socket.gethostbyname(socket.gethostname())
 port = 9997
@@ -12,6 +13,9 @@ client_list = {}
 for c in content:
     client_list = eval(c)
 
+for key in client_list.keys():
+    client_list[key] = '000'+str(random.randint(1,9))
+    
 print(client_list)
 certificate_socket = Node(host, port)
 
